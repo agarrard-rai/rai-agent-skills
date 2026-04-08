@@ -17,7 +17,7 @@ The `PropertyTransformer` class specifies how concept fields are transformed int
 
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `time_col` | list or single | Time column(s) for temporal models. Must NOT appear in `drop`. |
+| `time_col` | list or single | Time column(s) for temporal models. Must NOT appear in `drop`. When multiple concepts have date fields, list all of them: `time_col=[Study.start_date, Outcome.date, Design.date, ...]`. Fields in `time_col` must also appear in `datetime`. |
 
 ## Usage
 

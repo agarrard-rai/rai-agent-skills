@@ -52,7 +52,7 @@ define(Test(User, test_table_concept.timestamp)).where(
 )
 
 # ── Phase 5: Build Graph & Edges ────────────────────────────────────────────
-gnn_graph = Graph(model, directed=True, weighted=False, aggregator="sum")
+gnn_graph = Graph(model, directed=True, weighted=False)
 Edge = gnn_graph.Edge
 
 define(Edge.new(src=Event, dst=User)).where(

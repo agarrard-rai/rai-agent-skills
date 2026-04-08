@@ -36,9 +36,7 @@ These are named parameters on `GNN(...)`, not train_params:
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `test_batch_size` | int | None | Batch size for prediction/inference |
-| `export_csv` | bool | True | Export tables as CSV instead of Snowflake staging |
 | `stream_logs` | bool | True | Stream training logs to console |
-| `skip_cdc` | bool | True | Skip CDC for faster data loading |
 | `extract_embeddings` | bool | False | Extract node embeddings during prediction |
 | `use_current_time` | bool | True | Use current time for temporal models |
 
@@ -77,3 +75,13 @@ train_params = {
     "temporal_strategy": "last",
 }
 ```
+
+## Tuning When Results Are Poor
+
+| Symptom | Likely cause | Action |
+|---------|-------------|--------|
+| Validation metric still improving at last epoch | Not enough training | Increase `n_epochs` (e.g., 5 → 20) |
+| Training loss oscillates or diverges | Learning rate too high | Lower `lr` (e.g., 0.005 → 0.001) |
+| Good training metric, poor validation metric | Overfitting | Reduce `n_epochs`, reduce text features, or increase `train_batch_size` |
+| Very slow convergence on large dataset | Batch too small or lr too high | Increase `train_batch_size`, decrease `lr` |
+| Poor results despite good hyperparameters | Too many noisy features | Reduce `text` fields in PropertyTransformer; drop PKs/FKs |
