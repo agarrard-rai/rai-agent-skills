@@ -610,7 +610,9 @@ gnn.register_model(
 gnn = GNN(
     database="MY_DB", schema="MY_SCHEMA",
     exp_database="MY_DB", exp_schema="EXPERIMENTS",
-    graph=gnn_graph, pt=pt,
+    graph=gnn_graph, property_transformer=pt,
+    source_concept=User,
+    task_type="binary_classification",
     model_database="MY_DB", model_schema="MODEL_REGISTRY",
     model_name="fraud_detector", version_name="v1",
 )
@@ -624,7 +626,9 @@ User.predictions = gnn.predictions(domain=Test)
 gnn = GNN(
     database="MY_DB", schema="MY_SCHEMA",
     exp_database="MY_DB", exp_schema="EXPERIMENTS",
-    graph=gnn_graph, pt=pt,
+    graph=gnn_graph, property_transformer=pt,
+    source_concept=User,
+    task_type="binary_classification",
     model_run_id="01c2d9a0-0711-c54d-000a-1dc707f7a1e6",
 )
 gnn.load()
@@ -636,8 +640,11 @@ User.predictions = gnn.predictions(domain=Test)
 | Include | Omit |
 |---------|------|
 | `database`, `schema` | `train`, `validation` |
-| `exp_database`, `exp_schema` | `task_type`, `eval_metric` |
-| `graph`, `pt` | hyperparameters (`device`, `n_epochs`, etc.) |
+| `exp_database`, `exp_schema` | `eval_metric` |
+| `graph`, `property_transformer` | hyperparameters (`device`, `n_epochs`, etc.) |
+| `source_concept` (required — the concept being predicted on) | |
+| `task_type` (required — needed to determine prediction structure) | |
+| `target_concept` (required for link prediction only) | |
 | model identifier (registry key or run ID) | |
 
 After `gnn.load()`, use `gnn.predictions(domain=Test)` exactly as after `gnn.fit()`.
@@ -665,7 +672,7 @@ gnn.register_model(
 #### Session 2: Load and Predict (rebuild Phases 2+5, then load)
 
 ```python
-# Rebuild graph and pt (same structure as training)
+# Rebuild graph and property_transformer (same structure as training)
 gnn_graph = Graph(model, directed=True, weighted=False)
 # ... define edges ...
 pt = PropertyTransformer(...)
@@ -673,7 +680,9 @@ pt = PropertyTransformer(...)
 gnn = GNN(
     database="MY_DB", schema="MY_SCHEMA",
     exp_database="MY_DB", exp_schema="EXPERIMENTS",
-    graph=gnn_graph, pt=pt,
+    graph=gnn_graph, property_transformer=pt,
+    source_concept=User,
+    task_type="binary_classification",
     model_database="MY_DB", model_schema="MODEL_REGISTRY",
     model_name="fraud_detector", version_name="v1",
 )
@@ -702,8 +711,11 @@ User.predictions = gnn.predictions(domain=Test)
 | Using `.predicted_Article` (uppercase) | Attribute name is always lowercase | Use `.predicted_article` regardless of concept casing |
 | Invalid task_type/metric combination | Not all metrics work with all task types | Check [references/task-types-and-metrics.md](references/task-types-and-metrics.md) |
 | Calling `register_model()` before `fit()` | Model must be trained first | Always call `gnn.fit()` before `gnn.register_model()` |
-| Omitting `graph` or `pt` when loading | Loaded models still need graph structure | Provide the same `graph` and `pt` used during training |
+| Omitting `graph` or `property_transformer` when loading | Loaded models still need graph structure | Provide the same `graph` and `property_transformer` used during training |
 | Passing training-only params when loading | `train`, `validation`, hyperparameters are not needed | Omit them when calling `gnn.load()` |
+| Omitting `source_concept` when loading | Load workflow requires `source_concept` explicitly — it cannot be inferred without `train=` | Add `source_concept=<YourConcept>` to the load GNN constructor |
+| Omitting `task_type` when loading | Load workflow requires `task_type` to determine prediction structure | Add `task_type="<your_task_type>"` to the load GNN constructor |
+| Omitting `target_concept` for link prediction load | Link prediction load workflow also requires `target_concept` | Add `target_concept=<YourTargetConcept>` when loading a link prediction model |
 
 ---
 

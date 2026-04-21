@@ -14,7 +14,7 @@ Session 2: Load the registered model and generate predictions.
 gnn = GNN(
     database="MY_DB", schema="MY_SCHEMA",
     exp_database="MY_DB", exp_schema="EXPERIMENTS",
-    graph=gnn_graph, pt=pt,
+    graph=gnn_graph, property_transformer=pt,
     train=Train, validation=Val,
     task_type="binary_classification", eval_metric="roc_auc",
     has_time_column=True,
@@ -40,7 +40,9 @@ gnn.register_model(
 gnn = GNN(
     database="MY_DB", schema="MY_SCHEMA",
     exp_database="MY_DB", exp_schema="EXPERIMENTS",
-    graph=gnn_graph, pt=pt,
+    graph=gnn_graph, property_transformer=pt,
+    source_concept=User,
+    task_type="binary_classification",
     model_database="MY_DB",
     model_schema="MODEL_REGISTRY",
     model_name="fraud_detector",
