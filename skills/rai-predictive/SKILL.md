@@ -644,6 +644,7 @@ User.predictions = gnn.predictions(domain=Test)
 | `graph`, `property_transformer` | hyperparameters (`device`, `n_epochs`, etc.) |
 | `source_concept` (required — the concept being predicted on) | |
 | `task_type` (required — needed to determine prediction structure) | |
+| `has_time_column=True` (required if model was trained with a time column) | |
 | `target_concept` (required for link prediction only) | |
 | model identifier (registry key or run ID) | |
 
@@ -716,6 +717,7 @@ User.predictions = gnn.predictions(domain=Test)
 | Omitting `source_concept` when loading | Load workflow requires `source_concept` explicitly — it cannot be inferred without `train=` | Add `source_concept=<YourConcept>` to the load GNN constructor |
 | Omitting `task_type` when loading | Load workflow requires `task_type` to determine prediction structure | Add `task_type="<your_task_type>"` to the load GNN constructor |
 | Omitting `target_concept` for link prediction load | Link prediction load workflow also requires `target_concept` | Add `target_concept=<YourTargetConcept>` when loading a link prediction model |
+| Omitting `has_time_column=True` when loading a model trained with time column | `has_time_column` is not persisted in the registry — must be re-supplied at load time | Add `has_time_column=True` to the load GNN constructor if training used a time column |
 
 ---
 
